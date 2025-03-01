@@ -12,33 +12,47 @@ class CalendarColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Habit> calendars = Provider.of<HabitsManager>(context).getAllHabits;
 
-    return Column(
-      children: <Widget>[
-        const Padding(
-          padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
-          child: CalendarHeader(),
-        ),
-        Expanded(
-          child: (calendars.isNotEmpty)
-              ? ReorderableListView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
-                  children: calendars
-                      .map(
-                        (index) => Container(
+    return (calendars.isNotEmpty)
+        ? ReorderableListView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
+            children: calendars
+                .map(
+                  (index) => Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                    key: ObjectKey(index),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        ReorderableDragStartListener(
                           key: ObjectKey(index),
-                          child: index,
+                          index: calendars.indexOf(index),
+                          child: const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Icon(
+                              Icons.drag_handle_rounded,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ),
-                      )
-                      .toList(),
-                  onReorder: (oldIndex, newIndex) {
-                    Provider.of<HabitsManager>(context, listen: false)
-                        .reorderList(oldIndex, newIndex);
-                  },
+                        Expanded(
+                          child: Container(
+                            child: index,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 )
-              : const EmptyListImage(),
-        ),
-      ],
-    );
+                .toList(),
+            onReorder: (oldIndex, newIndex) {
+              Provider.of<HabitsManager>(context, listen: false)
+                  .reorderList(oldIndex, newIndex);
+            },
+          )
+        : const EmptyListImage();
   }
 }

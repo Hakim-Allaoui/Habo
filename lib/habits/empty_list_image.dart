@@ -20,11 +20,14 @@ class EmptyListImage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(
-                width: 300,
-                height: 300,
-                child: SvgPicture.asset('assets/images/emptyList.svg',
-                    semanticsLabel: S.of(context).emptyList),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SizedBox(
+                  width: 250,
+                  height: 250,
+                  child: SvgPicture.asset('assets/images/emptyList.svg',
+                      semanticsLabel: S.of(context).emptyList),
+                ),
               ),
               Text(
                 S.of(context).createYourFirstHabit,

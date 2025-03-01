@@ -294,7 +294,7 @@ class S {
   String get habo {
     return Intl.message(
       'Habo',
-      name: 'habo',
+      name: 'Metoera App Tracker',
       desc: '',
       args: [],
     );

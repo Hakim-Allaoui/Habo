@@ -118,7 +118,7 @@ class HabitsManager extends ChangeNotifier {
     for (var element in habits) {
       if (element.habitData.notification) {
         var data = element.habitData;
-        setHabitNotification(data.id!, data.notTime, 'Habo', data.title);
+        setHabitNotification(data.id!, data.notTime, 'Metoera App Tracker', data.title);
       }
     }
   }
@@ -204,7 +204,7 @@ class HabitsManager extends ChangeNotifier {
         newHabit.setId = id;
         allHabits.add(newHabit);
         if (notification) {
-          setHabitNotification(id, notTime, 'Habo', title);
+          setHabitNotification(id, notTime, 'Metoera App Tracker', title);
         } else {
           disableHabitNotification(id);
         }
@@ -232,7 +232,7 @@ class HabitsManager extends ChangeNotifier {
     _haboModel.editHabit(hab);
     if (habitData.notification) {
       setHabitNotification(
-          habitData.id!, habitData.notTime, 'Habo', habitData.title);
+          habitData.id!, habitData.notTime, 'Metoera App Tracker', habitData.title);
     } else {
       disableHabitNotification(habitData.id!);
     }

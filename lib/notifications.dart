@@ -42,7 +42,7 @@ void resetAppNotificationIfMissing(TimeOfDay timeOfDay) async {
 }
 
 void setAppNotification(TimeOfDay timeOfDay) async {
-  _setupDailyNotification(0, timeOfDay, 'Habo',
+  _setupDailyNotification(0, timeOfDay, 'Metoera App Tracker',
       S.current.doNotForgetToCheckYourHabits, 'app_notifications_habo');
 }
 

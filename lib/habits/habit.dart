@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:habo/extensions.dart';
 
+import 'calendar_header.dart';
+
 class Habit extends StatefulWidget {
   const Habit({super.key, required this.habitData});
 
@@ -242,6 +244,7 @@ class HabitState extends State<Habit> {
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: Text(_actualMonth),
               ),
+            const CalendarHeader(),
             TableCalendar(
               focusedDay: _focusedDay,
               firstDay: DateTime(2000),
@@ -285,11 +288,6 @@ class HabitState extends State<Habit> {
                   return OneDay(
                     date: date,
                     color: Theme.of(context).colorScheme.secondaryContainer,
-                    child: Text(
-                      date.day.toString(),
-                      style: TextStyle(
-                          color: (date.weekday > 5) ? Colors.red[300] : null),
-                    ),
                   );
                 },
                 outsideBuilder: (context, date, _) {

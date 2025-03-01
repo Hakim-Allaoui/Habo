@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pavlenko.Habo">
+    package="com.metoera_app_tracker.app">
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
@@ -15,7 +15,7 @@
     </queries>
 
    <application
-        android:label="Habo"
+        android:label="Metoera App Tracker"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

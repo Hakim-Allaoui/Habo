@@ -348,7 +348,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             width: 55,
                             height: 55,
                           ),
-                          applicationName: 'Habo',
+                          applicationName: 'Metoera App Tracker',
                           applicationVersion: _packageInfo.version,
                           applicationLegalese: '©2023 Habo',
                           children: <Widget>[

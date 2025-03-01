@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:habo/constants.dart';
 import 'package:habo/generated/l10n.dart';
 import 'package:habo/habits/habit.dart';
@@ -37,19 +38,18 @@ class HabitHeader extends StatelessWidget {
             ),
           ),
         ),
-        IconButton(
-          padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
-          constraints:
-              const BoxConstraints(minHeight: 36, minWidth: 36, maxHeight: 48),
-          icon: Icon(
-            Icons.edit_outlined,
-            semanticLabel: S.of(context).modify,
-          ),
-          color: Colors.grey,
-          tooltip: S.of(context).modify,
-          onPressed: () {
+        InkWell(
+          onTap: () {
             widget.navigateToEditPage(context);
           },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SvgPicture.asset(
+              'assets/images/edit.svg',
+              semanticsLabel: S.of(context).settings,
+              width: 24,
+            ),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 3, 0),

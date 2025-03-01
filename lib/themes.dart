@@ -10,7 +10,7 @@ class HaboTheme {
       scaffoldBackgroundColor: const Color(0xFFFAFAFA),
       dialogTheme: const DialogTheme(surfaceTintColor: Colors.white),
       brightness: Brightness.light,
-      primaryColor: const Color(0xFF09BF30),
+      primaryColor: const Color(0xFF2a9d8f),
       timePickerTheme: TimePickerThemeData(
         hourMinuteColor: Colors.grey[100],
         dialBackgroundColor: Colors.grey[100],
@@ -23,9 +23,9 @@ class HaboTheme {
         primary: HaboColors.primary,
         outline: const Color(0xFF505050),
       ),
-      fontFamily: GoogleFonts.nunito().fontFamily,
+      fontFamily: GoogleFonts.poppins().fontFamily,
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: Color(0xFF09BF30),
+        backgroundColor: Color(0xFF2a9d8f),
       ),
       appBarTheme: const AppBarTheme(
         elevation: 0,
@@ -49,7 +49,7 @@ class HaboTheme {
         surfaceTintColor: Colors.transparent,
       ),
       primaryColor: Colors.grey,
-      fontFamily: GoogleFonts.nunito().fontFamily,
+      fontFamily: GoogleFonts.poppins().fontFamily,
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith(getSwitchColorThumb),
         trackColor: MaterialStateProperty.resolveWith(getSwitchTrackColor),
@@ -70,7 +70,7 @@ class HaboTheme {
         outline: Colors.grey,
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: Color(0xFF09BF30),
+        backgroundColor: Color(0xFF2a9d8f),
       ),
       appBarTheme: const AppBarTheme(
         elevation: 0,
@@ -94,7 +94,7 @@ class HaboTheme {
         surfaceTintColor: Colors.transparent,
       ),
       primaryColor: Colors.grey,
-      fontFamily: GoogleFonts.nunito().fontFamily,
+      fontFamily: GoogleFonts.poppins().fontFamily,
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith(getSwitchColorThumb),
         trackColor: MaterialStateProperty.resolveWith(getSwitchTrackColor),
@@ -115,7 +115,7 @@ class HaboTheme {
         outline: Colors.grey,
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: Color(0xFF09BF30),
+        backgroundColor: Color(0xFF2a9d8f),
       ),
       appBarTheme: const AppBarTheme(
         elevation: 0,

@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habo/constants.dart';
 import 'package:habo/generated/l10n.dart';
 import 'package:habo/notifications.dart';
@@ -49,38 +50,42 @@ class _HabitsScreenState extends State<HabitsScreen> {
         return Scaffold(
           appBar: AppBar(
             title: const Text(
-              'Habo',
+              'Metoera App Tracker',
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
             backgroundColor: Colors.transparent,
             actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.bar_chart,
-                  semanticLabel: S.of(context).statistics,
-                ),
-                color: Colors.grey[400],
-                tooltip: S.of(context).statistics,
-                onPressed: () {
-                  Provider.of<HabitsManager>(context, listen: false)
-                      .hideSnackBar();
-                  Provider.of<AppStateManager>(context, listen: false)
-                      .goStatistics(true);
+
+              InkWell(
+                onTap: () {Provider.of<HabitsManager>(context, listen: false)
+                    .hideSnackBar();
+                Provider.of<AppStateManager>(context, listen: false)
+                    .goStatistics(true);
                 },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.settings,
-                  semanticLabel: S.of(context).settings,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SvgPicture.asset(
+                    'assets/images/graph.svg',
+                    semanticsLabel: S.of(context).settings,
+                    width: 24,
+                  ),
                 ),
-                color: Colors.grey[400],
-                tooltip: S.of(context).settings,
-                onPressed: () {
+              ),
+              InkWell(
+                onTap: () {
                   Provider.of<AppStateManager>(context, listen: false)
                       .goSettings(true);
                   Provider.of<HabitsManager>(context, listen: false)
                       .hideSnackBar();
                 },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SvgPicture.asset(
+                    'assets/images/settings.svg',
+                    semanticsLabel: S.of(context).settings,
+                    width: 24,
+                  ),
+                ),
               ),
             ],
           ),

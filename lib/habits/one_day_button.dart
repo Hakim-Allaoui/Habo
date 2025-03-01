@@ -104,7 +104,7 @@ class OneDayButton extends StatelessWidget {
           child: Material(
             color: color,
             borderRadius: BorderRadius.circular(10.0),
-            elevation: 2,
+            // elevation: 2,
             shadowColor: Theme.of(context).shadowColor,
             child: Container(
               alignment: Alignment.center,

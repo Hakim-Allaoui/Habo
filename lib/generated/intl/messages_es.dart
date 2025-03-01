@@ -56,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "close": MessageLookupByLibrary.simpleMessage("Cerrar"),
         "congratulationsReward": MessageLookupByLibrary.simpleMessage(
             "¡Felicidades! Tu recompensa:"),
-        "copyright": MessageLookupByLibrary.simpleMessage("Habo ©2023"),
+        "copyright": MessageLookupByLibrary.simpleMessage("Metoera App Tracker ©2023"),
         "create": MessageLookupByLibrary.simpleMessage("Crear"),
         "createHabit": MessageLookupByLibrary.simpleMessage("Crear un hábito"),
         "createYourFirstHabit":
@@ -107,9 +107,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "habitTitleEmptyError": MessageLookupByLibrary.simpleMessage(
             "El título del hábito no puede estar vacío."),
         "habits": MessageLookupByLibrary.simpleMessage("Hábitos:"),
-        "habo": MessageLookupByLibrary.simpleMessage("Habo"),
+        "habo": MessageLookupByLibrary.simpleMessage("Metoera App Tracker"),
         "haboNeedsPermission": MessageLookupByLibrary.simpleMessage(
-            "Habo necesita permisos para enviar notificaciones para funcionar correctamente."),
+            "Metoera App Tracker necesita permisos para enviar notificaciones para funcionar correctamente."),
         "ifYouWantToSupport": MessageLookupByLibrary.simpleMessage(
             "Si quieres apoyar a Habo puedes hacerlo:"),
         "logYourDays":

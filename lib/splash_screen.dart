@@ -24,12 +24,15 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/images/icon.png',
-              width: 72,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/images/icon.png',
+                width: 72,
+              ),
             ),
             Text(
-              'Habo',
+              'Metoera App Tracker',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ],

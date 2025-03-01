@@ -107,7 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "habitTitleEmptyError": MessageLookupByLibrary.simpleMessage(
             "Alışkanlık başlığı boş olamaz."),
         "habits": MessageLookupByLibrary.simpleMessage("Alışkanlıklar:"),
-        "habo": MessageLookupByLibrary.simpleMessage("Habo"),
+        "habo": MessageLookupByLibrary.simpleMessage("Metoera App Tracker"),
         "haboNeedsPermission": MessageLookupByLibrary.simpleMessage(
             "Habo\'nun düzgün çalışması için bildirim gönderme iznine ihtiyacı vardır."),
         "ifYouWantToSupport": MessageLookupByLibrary.simpleMessage(

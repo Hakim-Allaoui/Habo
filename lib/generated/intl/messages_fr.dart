@@ -108,9 +108,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "habitTitleEmptyError": MessageLookupByLibrary.simpleMessage(
             "Le nom de l\'habitude ne peut pas être vierge."),
         "habits": MessageLookupByLibrary.simpleMessage("Habitudes :"),
-        "habo": MessageLookupByLibrary.simpleMessage("Habo"),
+        "habo": MessageLookupByLibrary.simpleMessage("Metoera App Tracker"),
         "haboNeedsPermission": MessageLookupByLibrary.simpleMessage(
-            "Habo a besoin de l\'autorisation d\'envoyer des notifications pour fonctionner correctement."),
+            "Metoera App Tracker a besoin de l\'autorisation d\'envoyer des notifications pour fonctionner correctement."),
         "ifYouWantToSupport": MessageLookupByLibrary.simpleMessage(
             "Si vous souhaitez soutenir Habo vous pouvez :"),
         "logYourDays":

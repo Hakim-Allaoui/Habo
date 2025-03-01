@@ -105,9 +105,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "habitTitleEmptyError": MessageLookupByLibrary.simpleMessage(
             "Názov zvyku nemôže byť prázdny."),
         "habits": MessageLookupByLibrary.simpleMessage("Zvyky:"),
-        "habo": MessageLookupByLibrary.simpleMessage("Habo"),
+        "habo": MessageLookupByLibrary.simpleMessage("Metoera App Tracker"),
         "haboNeedsPermission": MessageLookupByLibrary.simpleMessage(
-            "Habo potrebuje povolenie na odosielanie oznámení na správne fungovanie."),
+            "Metoera App Tracker potrebuje povolenie na odosielanie oznámení na správne fungovanie."),
         "ifYouWantToSupport": MessageLookupByLibrary.simpleMessage(
             "Ak chcete podporiť Habo, môžete:"),
         "logYourDays":

@@ -78,7 +78,8 @@ class _HaboState extends State<Habo> {
       ],
       child: Consumer<SettingsManager>(builder: (context, counter, _) {
         return MaterialApp(
-          title: 'Habo',
+          debugShowCheckedModeBanner: false,
+          title: 'Metoera App Tracker',
           localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
