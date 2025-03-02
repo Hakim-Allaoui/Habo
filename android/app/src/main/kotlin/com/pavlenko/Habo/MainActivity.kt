@@ -1,4 +1,4 @@
-package com.metoera_app_tracker.app
+package com.metoeraapptracker.app
 
 import io.flutter.embedding.android.FlutterActivity
 
