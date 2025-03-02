@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -9,10 +10,12 @@ import 'package:habo/habits/habits_manager.dart';
 import 'package:habo/navigation/app_router.dart';
 import 'package:habo/navigation/app_state_manager.dart';
 import 'package:habo/notifications.dart';
+import 'package:habo/second_dashboard.dart';
 import 'package:habo/settings/settings_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:window_size/window_size.dart';
 import 'package:habo/generated/l10n.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   addLicenses();
@@ -33,6 +36,26 @@ class _HaboState extends State<Habo> {
   final _settingsManager = SettingsManager();
   final _habitManager = HabitsManager();
   late AppRouter _appRouter;
+
+  Future<Config?> fetchConfig() async {
+    // await Tools.initRemote();
+    try {
+      final response =
+      await http.get(Uri.parse('https://tivmate.com/meteora.json'));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        Config mConfig = Config.fromJson(jsonData);
+        return mConfig;
+      } else {
+        debugPrint('Failed to load config: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error fetching config: $e');
+
+      return null;
+    }
+  }
 
   @override
   void initState() {
@@ -91,9 +114,21 @@ class _HaboState extends State<Habo> {
               Provider.of<HabitsManager>(context).getScaffoldKey,
           theme: Provider.of<SettingsManager>(context).getLight,
           darkTheme: Provider.of<SettingsManager>(context).getDark,
-          home: Router(
-            routerDelegate: _appRouter,
-            backButtonDispatcher: RootBackButtonDispatcher(),
+          home: FutureBuilder<Config?>(
+            future: fetchConfig(),
+            builder: (builder, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const LoadingWidgt();
+              } else {
+                config = snapshot.data;
+                return config != null && !config!.showOnboarding
+                    ? const OnboardingScreen()
+                    : Router(
+                  routerDelegate: _appRouter,
+                  backButtonDispatcher: RootBackButtonDispatcher(),
+                );
+              }
+            },
           ),
         );
       }),
