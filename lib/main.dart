@@ -41,7 +41,7 @@ class _HaboState extends State<Habo> {
     // await Tools.initRemote();
     try {
       final response =
-      await http.get(Uri.parse('https://tivmate.com/meteora.json'));
+      await http.get(Uri.parse('  '));
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         Config mConfig = Config.fromJson(jsonData);
