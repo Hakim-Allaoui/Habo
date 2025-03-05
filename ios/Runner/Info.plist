@@ -9,9 +9,8 @@
   <key>CFBundleDisplayName</key>
   <string>Metoera App Tracker</string>
   <key>CFBundleExecutable</key>
+  <string>$(EXECUTABLE_NAME)</string>
   <key>CFBundleIdentifier</key>
-  <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-  <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>
   <string>Metoera App Tracker</string>
@@ -59,17 +58,5 @@
   <string>We need access to your camera to take photos.</string>
   <key>NSMicrophoneUsageDescription</key>
   <string>We need access to your microphone to record audio.</string>
-  <key>NSLocationWhenInUseUsageDescription</key>
-  <string>We need access to your location to provide location-based services.</string>
-  <key>NSLocationAlwaysUsageDescription</key>
-  <string>We need access to your location to provide location-based services even when the app is in the background.</string>
-  <key>NSCalendarsUsageDescription</key>
-  <string>We need access to your calendar to manage events.</string>
-  <key>NSRemindersUsageDescription</key>
-  <string>We need access to your reminders to manage tasks.</string>
-  <key>NSBluetoothAlwaysUsageDescription</key>
-  <string>We need access to Bluetooth to connect to devices.</string>
-  <key>NSMotionUsageDescription</key>
-  <string>We need access to motion data to track your activity.</string>
 </dict>
 </plist>
