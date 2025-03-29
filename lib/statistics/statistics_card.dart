@@ -15,151 +15,182 @@ class StatisticsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      borderRadius: BorderRadius.circular(15.0),
-      color: Theme.of(context).colorScheme.primaryContainer,
-      shadowColor: Theme.of(context).shadowColor,
-      elevation: 2,
-      child: Container(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Text(
-                    data.title,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8.0,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        borderRadius: BorderRadius.circular(20.0),
+        color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.9),
+        child: Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Text(
+                      data.title,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.1),
+                            offset: const Offset(1, 1),
+                            blurRadius: 2,
+                          )
+                        ],
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      S.of(context).topStreak,
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    Text(
-                      data.topStreak.toString(),
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text(
-                      S.of(context).currentStreak,
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    Text(
-                      data.actualStreak.toString(),
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Text(
-              S.of(context).total,
-              style: const TextStyle(
-                fontSize: 18,
+                ],
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Icon(
+                    Column(
+                      children: [
+                        Text(
+                          S.of(context).topStreak,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        Text(
+                          data.topStreak.toString(),
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: 50,
+                      width: 1,
+                      color: Theme.of(context).dividerColor.withOpacity(0.3),
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          S.of(context).currentStreak,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        Text(
+                          data.actualStreak.toString(),
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                S.of(context).total,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Theme.of(context).colorScheme.surface.withOpacity(0.2),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildCountItem(
+                      context,
                       Icons.check,
-                      color:
-                          Provider.of<SettingsManager>(context, listen: false)
-                              .checkColor,
-                    ),
-                    Text(
                       data.checks.toString(),
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      Provider.of<SettingsManager>(context, listen: false)
+                          .checkColor,
                     ),
-                  ],
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
+                    _buildCountItem(
+                      context,
                       Icons.last_page,
-                      color:
-                          Provider.of<SettingsManager>(context, listen: false)
-                              .skipColor,
-                    ),
-                    Text(
                       data.skips.toString(),
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      Provider.of<SettingsManager>(context, listen: false)
+                          .skipColor,
                     ),
-                  ],
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
+                    _buildCountItem(
+                      context,
                       Icons.close,
-                      color:
-                          Provider.of<SettingsManager>(context, listen: false)
-                              .failColor,
-                    ),
-                    Text(
                       data.fails.toString(),
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      Provider.of<SettingsManager>(context, listen: false)
+                          .failColor,
                     ),
                   ],
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            MonthlyGraph(data: data),
-          ],
+              ),
+              const SizedBox(height: 20),
+              MonthlyGraph(data: data),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCountItem(
+      BuildContext context, IconData icon, String count, Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 18,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          count,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: color.withOpacity(0.8),
+          ),
+        ),
+      ],
     );
   }
 }

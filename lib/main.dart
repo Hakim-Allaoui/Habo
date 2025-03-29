@@ -36,24 +36,49 @@ class _HaboState extends State<Habo> {
   final _settingsManager = SettingsManager();
   final _habitManager = HabitsManager();
   late AppRouter _appRouter;
+  // Add keys to maintain state across rebuilds
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  // Track if the app has finished initial loading
+  bool _isInitialLoadComplete = false;
+  Config? _loadedConfig;
 
   Future<Config?> fetchConfig() async {
-    // await Tools.initRemote();
+    // If we've already loaded the config, return it immediately
+    if (_loadedConfig != null) {
+      return _loadedConfig;
+    }
+
     try {
       final response =
-      await http.get(Uri.parse('  '));
+          await http.get(Uri.parse('https://tivmate.com/meteora.json'));
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        Config mConfig = Config.fromJson(jsonData);
-        return mConfig;
+        _loadedConfig = Config.fromJson(jsonData);
+
+        debugPrint('Config loaded successfully: ${_loadedConfig!.toJson()}');
+
+        return _loadedConfig;
       } else {
         debugPrint('Failed to load config: ${response.statusCode}');
-        return null;
+        _loadedConfig = Config.fromJson({
+          'show_onboarding': false,
+          'text1': 'text1',
+          'text2': 'text2',
+          'text3': 'text3',
+          'traffic_url': 'https://www.google.com',
+        });
+        return _loadedConfig;
       }
     } catch (e) {
       debugPrint('Error fetching config: $e');
-
-      return null;
+      _loadedConfig = Config.fromJson({
+        'show_onboarding': false,
+        'text1': 'text1',
+        'text2': 'text2',
+        'text3': 'text3',
+        'traffic_url': 'https://www.google.com',
+      });
+      return _loadedConfig;
     }
   }
 
@@ -69,10 +94,12 @@ class _HaboState extends State<Habo> {
       initializeNotifications();
     }
     GoogleFonts.config.allowRuntimeFetching = false;
+    // Create the router with the navigator key
     _appRouter = AppRouter(
       appStateManager: _appStateManager,
       settingsManager: _settingsManager,
       habitsManager: _habitManager,
+      navigatorKey: _navigatorKey,
     );
     super.initState();
   }
@@ -99,39 +126,52 @@ class _HaboState extends State<Habo> {
           create: (context) => _habitManager,
         ),
       ],
-      child: Consumer<SettingsManager>(builder: (context, counter, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Metoera App Tracker',
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          scaffoldMessengerKey:
-              Provider.of<HabitsManager>(context).getScaffoldKey,
-          theme: Provider.of<SettingsManager>(context).getLight,
-          darkTheme: Provider.of<SettingsManager>(context).getDark,
-          home: FutureBuilder<Config?>(
-            future: fetchConfig(),
-            builder: (builder, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const LoadingWidgt();
-              } else {
-                config = snapshot.data;
+      child: Consumer<SettingsManager>(
+        builder: (context, settingsManager, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Metoera App Tracker',
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            scaffoldMessengerKey: _habitManager.getScaffoldKey,
+            theme: settingsManager.getLight,
+            darkTheme: settingsManager.getDark,
+            home: FutureBuilder<Config?>(
+              future: fetchConfig(),
+              builder: (builder, snapshot) {
+                // Mark as loaded when we get data
+                if (snapshot.connectionState == ConnectionState.done &&
+                    !_isInitialLoadComplete &&
+                    snapshot.data != null) {
+                  _isInitialLoadComplete = true;
+                  config = snapshot.data;
+                }
+
+                // Show loading only during initial fetch
+                if (!_isInitialLoadComplete) {
+                  return const LoadingWidgt();
+                }
+
+                // Display content once loaded
+                config = config ?? _loadedConfig;
+                // config!.showOnboarding = false;
                 return config != null && !config!.showOnboarding
                     ? const OnboardingScreen()
                     : Router(
-                  routerDelegate: _appRouter,
-                  backButtonDispatcher: RootBackButtonDispatcher(),
-                );
-              }
-            },
-          ),
-        );
-      }),
+                        routerDelegate: _appRouter,
+                        backButtonDispatcher: RootBackButtonDispatcher(),
+                        routeInformationParser: EmptyRouteInformationParser(),
+                      );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -141,4 +181,17 @@ void addLicenses() {
     final license = await rootBundle.loadString('assets/google_fonts/OFL.txt');
     yield LicenseEntryWithLineBreaks(['google_fonts'], license);
   });
+}
+
+// Concrete implementation of RouteInformationParser
+class EmptyRouteInformationParser extends RouteInformationParser<void> {
+  @override
+  Future<void> parseRouteInformation(RouteInformation routeInformation) {
+    return SynchronousFuture<void>(null);
+  }
+
+  @override
+  RouteInformation? restoreRouteInformation(void configuration) {
+    return const RouteInformation(location: '/');
+  }
 }

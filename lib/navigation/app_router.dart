@@ -10,7 +10,7 @@ import 'package:habo/settings/settings_screen.dart';
 import 'package:habo/splash_screen.dart';
 import 'package:habo/statistics/statistics_screen.dart';
 
-class AppRouter extends RouterDelegate
+class AppRouter extends RouterDelegate<void>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   @override
   final GlobalKey<NavigatorState> navigatorKey;
@@ -19,16 +19,20 @@ class AppRouter extends RouterDelegate
   final SettingsManager settingsManager;
   final HabitsManager habitsManager;
 
-  AppRouter(
-      {required this.appStateManager,
-      required this.settingsManager,
-      required this.habitsManager})
-      : navigatorKey = GlobalKey<NavigatorState>() {
+  AppRouter({
+    required this.appStateManager,
+    required this.settingsManager,
+    required this.habitsManager,
+    required this.navigatorKey,
+  }) {
     appStateManager.addListener(notifyListeners);
     settingsManager.addListener(notifyListeners);
     habitsManager.addListener(notifyListeners);
     settingsManager.getSeenOnboarding;
   }
+
+  @override
+  GlobalKey<NavigatorState>? get navigatorKeyOverride => navigatorKey;
 
   @override
   void dispose() {

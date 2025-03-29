@@ -27,7 +27,6 @@ class HabitsManager extends ChangeNotifier {
 
   void initialize() async {
     await initModel();
-    await Future.delayed(const Duration(seconds: 5));
     notifyListeners();
   }
 
@@ -118,7 +117,8 @@ class HabitsManager extends ChangeNotifier {
     for (var element in habits) {
       if (element.habitData.notification) {
         var data = element.habitData;
-        setHabitNotification(data.id!, data.notTime, 'Metoera App Tracker', data.title);
+        setHabitNotification(
+            data.id!, data.notTime, 'Metoera App Tracker', data.title);
       }
     }
   }
@@ -156,8 +156,10 @@ class HabitsManager extends ChangeNotifier {
     Habit moved = allHabits.removeAt(oldIndex);
     allHabits.insert(newIndex, moved);
     updateOrder();
-    _haboModel.updateOrder(allHabits);
-    notifyListeners();
+
+    _haboModel.updateOrder(allHabits).then((_) {
+      Future.microtask(() => notifyListeners());
+    });
   }
 
   addEvent(int id, DateTime dateTime, List event) {
@@ -180,7 +182,8 @@ class HabitsManager extends ChangeNotifier {
       TimeOfDay notTime,
       String sanction,
       bool showSanction,
-      String accountant) {
+      String accountant) async {
+    // Make this function async
     Habit newHabit = Habit(
       habitData: HabitData(
         position: allHabits.length,
@@ -199,19 +202,24 @@ class HabitsManager extends ChangeNotifier {
         accountant: accountant,
       ),
     );
-    _haboModel.insertHabit(newHabit).then(
-      (id) {
-        newHabit.setId = id;
-        allHabits.add(newHabit);
-        if (notification) {
-          setHabitNotification(id, notTime, 'Metoera App Tracker', title);
-        } else {
-          disableHabitNotification(id);
-        }
-        notifyListeners();
-      },
-    );
+
+    // Use await to make sure the habit is inserted before proceeding
+    final id = await _haboModel.insertHabit(newHabit);
+    newHabit.setId = id;
+    allHabits.add(newHabit);
+
+    if (notification) {
+      setHabitNotification(id, notTime, 'Metoera App Tracker', title);
+    } else {
+      disableHabitNotification(id);
+    }
+
     updateOrder();
+
+    // Make sure UI updates on the main thread
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   editHabit(HabitData habitData) {
@@ -231,8 +239,8 @@ class HabitsManager extends ChangeNotifier {
     hab.habitData.accountant = habitData.accountant;
     _haboModel.editHabit(hab);
     if (habitData.notification) {
-      setHabitNotification(
-          habitData.id!, habitData.notTime, 'Metoera App Tracker', habitData.title);
+      setHabitNotification(habitData.id!, habitData.notTime,
+          'Metoera App Tracker', habitData.title);
     } else {
       disableHabitNotification(habitData.id!);
     }
@@ -254,11 +262,27 @@ class HabitsManager extends ChangeNotifier {
     return result;
   }
 
-  deleteHabit(int id) {
+  deleteHabit(int id) async {
+    // Make this function async
     deletedHabit = findHabitById(id);
+    if (deletedHabit == null) return;
+
+    // Make a temporary copy before removal
+    final tempHabit = deletedHabit!;
+
+    // Remove from the list
     allHabits.remove(deletedHabit);
-    toDelete.addLast(deletedHabit!);
-    Future.delayed(const Duration(seconds: 4), () => deleteFromDB());
+    toDelete.addLast(tempHabit);
+
+    // Update order
+    updateOrder();
+
+    // Force UI refresh on the main thread
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+
+    // Show snackbar
     _scaffoldKey.currentState!.hideCurrentSnackBar();
     _scaffoldKey.currentState!.showSnackBar(
       SnackBar(
@@ -268,35 +292,44 @@ class HabitsManager extends ChangeNotifier {
         action: SnackBarAction(
           label: S.current.undo,
           onPressed: () {
-            undoDeleteHabit(deletedHabit!);
+            undoDeleteHabit(tempHabit);
           },
         ),
       ),
     );
-    updateOrder();
-    notifyListeners();
+
+    // Schedule deletion from database
+    Future.delayed(const Duration(seconds: 4), () => deleteFromDB());
   }
 
+  // Modify undoDeleteHabit to ensure proper UI update
   undoDeleteHabit(Habit del) {
+    if (del.habitData.id == null) return;
+
     toDelete.remove(del);
-    if (deletedHabit != null) {
-      if (deletedHabit!.habitData.position < allHabits.length) {
-        allHabits.insert(deletedHabit!.habitData.position, deletedHabit!);
-      } else {
-        allHabits.add(deletedHabit!);
-      }
+
+    if (del.habitData.position < allHabits.length) {
+      allHabits.insert(del.habitData.position, del);
+    } else {
+      allHabits.add(del);
     }
 
     updateOrder();
-    notifyListeners();
+
+    // Force UI refresh on the main thread
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   Future<void> deleteFromDB() async {
-    if (toDelete.isNotEmpty) {
-      disableHabitNotification(toDelete.first.habitData.id!);
-      _haboModel.deleteHabit(toDelete.first.habitData.id!);
-      toDelete.removeFirst();
-    }
+    if (toDelete.isEmpty) return; // Safety check
+
+    var habitToDelete = toDelete.first;
+    disableHabitNotification(habitToDelete.habitData.id!);
+    await _haboModel.deleteHabit(habitToDelete.habitData.id!);
+    toDelete.removeFirst();
+
     if (toDelete.isNotEmpty) {
       Future.delayed(const Duration(seconds: 1), () => deleteFromDB());
     }
@@ -311,5 +344,22 @@ class HabitsManager extends ChangeNotifier {
 
   Future<AllStatistics> getFutureStatsData() async {
     return await Statistics.calculateStatistics(allHabits);
+  }
+
+  void setHabitsList(List<Habit> habits) {
+    allHabits = List.from(habits);
+    updateOrder();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _haboModel.updateOrder(allHabits);
+      notifyListeners();
+    });
+  }
+
+  // Add method to force refresh UI
+  void refreshUI() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 }

@@ -100,6 +100,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ).show();
   }
 
+  Widget _buildSettingsTile({
+    required String title,
+    Widget? trailing,
+    VoidCallback? onTap,
+    bool isEnabled = true,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: isEnabled
+            ? Theme.of(context).colorScheme.surface.withOpacity(0.8)
+            : Theme.of(context).colorScheme.surface.withOpacity(0.4),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ListTile(
+        enabled: isEnabled,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: isEnabled
+                ? Theme.of(context).colorScheme.onSurface
+                : Theme.of(context).disabledColor,
+          ),
+        ),
+        trailing: trailing,
+        onTap: onTap,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppStateManager>(
@@ -111,79 +154,173 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return LoaderOverlay(
           useDefaultLoading: false,
           overlayWidgetBuilder: (_) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: HaboColors.primary,
+            return Center(
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: const CircularProgressIndicator(
+                  color: HaboColors.primary,
+                  strokeWidth: 3,
+                ),
               ),
             );
           },
           child: Scaffold(
+            extendBodyBehindAppBar: true,
             appBar: AppBar(
               title: Text(
                 S.of(context).settings,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
+              elevation: 0,
               backgroundColor: Colors.transparent,
-              iconTheme: Theme.of(context).iconTheme,
+              iconTheme: IconThemeData(
+                color: Theme.of(context).colorScheme.primary,
+                size: 28,
+              ),
             ),
-            body: SingleChildScrollView(
-              child: Center(
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
+              ),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.only(top: 100, bottom: 30),
                 child: Column(
                   children: <Widget>[
-                    ListTile(
-                      title: Text(S.of(context).theme),
-                      trailing: DropdownButton<Themes>(
-                        items: Themes.values.map((Themes value) {
-                          return DropdownMenuItem<Themes>(
-                            value: value,
-                            child: Text(
-                              S.of(context).themeSelect(value.name),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }).toList(),
-                        value: Provider.of<SettingsManager>(context)
-                            .getThemeString,
-                        onChanged: (value) {
-                          Provider.of<SettingsManager>(context, listen: false)
-                              .setTheme = value!;
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(S.of(context).firstDayOfWeek),
-                          const SizedBox(width: 5),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryContainer
+                            .withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 5,
+                            offset: const Offset(0, 2),
+                          ),
                         ],
                       ),
-                      trailing: DropdownButton<dynamic>(
-                        alignment: Alignment.center,
-                        items: StartingDayOfWeek.values.map((dynamic value) {
-                          return DropdownMenuItem<dynamic>(
-                            alignment: Alignment.center,
-                            value: value,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.settings,
+                            size: 30,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
                             child: Text(
-                              DateFormat('E', Intl.getCurrentLocale())
-                                  .dateSymbols
-                                  .WEEKDAYS[(value.index + 1) % 7]
-                                  .substring(0, 2)
-                                  .capitalize(),
-                              textAlign: TextAlign.center,
+                              "Personalize your experience",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                              ),
                             ),
-                          );
-                        }).toList(),
-                        value: Provider.of<SettingsManager>(context)
-                            .getWeekStartEnum,
-                        onChanged: (value) {
-                          Provider.of<SettingsManager>(context, listen: false)
-                              .setWeekStart = value;
-                        },
+                          ),
+                        ],
+                      ),
+                    ),
+                    _buildSettingsTile(
+                      title: S.of(context).theme,
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: DropdownButton<Themes>(
+                          underline: const SizedBox(),
+                          borderRadius: BorderRadius.circular(12),
+                          items: Themes.values.map((Themes value) {
+                            return DropdownMenuItem<Themes>(
+                              value: value,
+                              child: Text(
+                                S.of(context).themeSelect(value.name),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }).toList(),
+                          value: Provider.of<SettingsManager>(context)
+                              .getThemeString,
+                          onChanged: (value) {
+                            Provider.of<SettingsManager>(context, listen: false)
+                                .setTheme = value!;
+                          },
+                        ),
+                      ),
+                    ),
+                    _buildSettingsTile(
+                      title: S.of(context).firstDayOfWeek,
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: DropdownButton<dynamic>(
+                          underline: const SizedBox(),
+                          borderRadius: BorderRadius.circular(12),
+                          alignment: Alignment.center,
+                          items: StartingDayOfWeek.values.map((dynamic value) {
+                            return DropdownMenuItem<dynamic>(
+                              alignment: Alignment.center,
+                              value: value,
+                              child: Text(
+                                DateFormat('E', Intl.getCurrentLocale())
+                                    .dateSymbols
+                                    .WEEKDAYS[(value.index + 1) % 7]
+                                    .substring(0, 2)
+                                    .capitalize(),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }).toList(),
+                          value: Provider.of<SettingsManager>(context)
+                              .getWeekStartEnum,
+                          onChanged: (value) {
+                            Provider.of<SettingsManager>(context, listen: false)
+                                .setWeekStart = value;
+                          },
+                        ),
                       ),
                     ),
                     if (platformSupportsNotifications())
-                      ListTile(
-                        title: Text(S.of(context).notifications),
+                      _buildSettingsTile(
+                        title: S.of(context).notifications,
                         trailing: Switch(
                           value: Provider.of<SettingsManager>(context)
                               .getShowDailyNot,
@@ -194,10 +331,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                     if (platformSupportsNotifications())
-                      ListTile(
-                        enabled: Provider.of<SettingsManager>(context)
+                      _buildSettingsTile(
+                        isEnabled: Provider.of<SettingsManager>(context)
                             .getShowDailyNot,
-                        title: Text(S.of(context).notificationTime),
+                        title: S.of(context).notificationTime,
                         trailing: InkWell(
                           onTap: () {
                             if (Provider.of<SettingsManager>(context,
@@ -206,20 +343,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               testTime(context);
                             }
                           },
-                          child: Text(
-                            '${Provider.of<SettingsManager>(context).getDailyNot.hour.toString().padLeft(2, '0')}'
-                            ':'
-                            '${Provider.of<SettingsManager>(context).getDailyNot.minute.toString().padLeft(2, '0')}',
-                            style: TextStyle(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Provider.of<SettingsManager>(context)
+                                      .getShowDailyNot
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.1)
+                                  : Theme.of(context)
+                                      .disabledColor
+                                      .withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${Provider.of<SettingsManager>(context).getDailyNot.hour.toString().padLeft(2, '0')}'
+                              ':'
+                              '${Provider.of<SettingsManager>(context).getDailyNot.minute.toString().padLeft(2, '0')}',
+                              style: TextStyle(
                                 color: (Provider.of<SettingsManager>(context)
                                         .getShowDailyNot)
-                                    ? null
-                                    : Theme.of(context).disabledColor),
+                                    ? Theme.of(context).colorScheme.onSurface
+                                    : Theme.of(context).disabledColor,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ListTile(
-                      title: Text(S.of(context).soundEffects),
+                    _buildSettingsTile(
+                      title: S.of(context).soundEffects,
                       trailing: Switch(
                         value: Provider.of<SettingsManager>(context)
                             .getSoundEffects,
@@ -229,8 +383,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
                     ),
-                    ListTile(
-                      title: Text(S.of(context).showMonthName),
+                    _buildSettingsTile(
+                      title: S.of(context).showMonthName,
                       trailing: Switch(
                         value: Provider.of<SettingsManager>(context)
                             .getShowMonthName,
@@ -240,57 +394,64 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
                     ),
-                    ListTile(
-                      title: Text(S.of(context).setColors),
+                    _buildSettingsTile(
+                      title: S.of(context).setColors,
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ColorIcon(
-                            color: Provider.of<SettingsManager>(context,
-                                    listen: false)
-                                .checkColor,
-                            icon: Icons.check,
-                            defaultColor: HaboColors.primary,
-                            onPicked: (value) {
-                              Provider.of<SettingsManager>(context,
+                          _buildColorIconWrapper(
+                            ColorIcon(
+                              color: Provider.of<SettingsManager>(context,
                                       listen: false)
-                                  .checkColor = value;
-                            },
+                                  .checkColor,
+                              icon: Icons.check,
+                              defaultColor: HaboColors.primary,
+                              onPicked: (value) {
+                                Provider.of<SettingsManager>(context,
+                                        listen: false)
+                                    .checkColor = value;
+                              },
+                            ),
                           ),
-                          ColorIcon(
-                            color: Provider.of<SettingsManager>(context,
-                                    listen: false)
-                                .failColor,
-                            icon: Icons.close,
-                            defaultColor: HaboColors.red,
-                            onPicked: (value) {
-                              Provider.of<SettingsManager>(context,
+                          _buildColorIconWrapper(
+                            ColorIcon(
+                              color: Provider.of<SettingsManager>(context,
                                       listen: false)
-                                  .failColor = value;
-                            },
+                                  .failColor,
+                              icon: Icons.close,
+                              defaultColor: HaboColors.red,
+                              onPicked: (value) {
+                                Provider.of<SettingsManager>(context,
+                                        listen: false)
+                                    .failColor = value;
+                              },
+                            ),
                           ),
-                          ColorIcon(
-                            color: Provider.of<SettingsManager>(context,
-                                    listen: false)
-                                .skipColor,
-                            icon: Icons.last_page,
-                            defaultColor: HaboColors.skip,
-                            onPicked: (value) {
-                              Provider.of<SettingsManager>(context,
+                          _buildColorIconWrapper(
+                            ColorIcon(
+                              color: Provider.of<SettingsManager>(context,
                                       listen: false)
-                                  .skipColor = value;
-                            },
-                          )
+                                  .skipColor,
+                              icon: Icons.last_page,
+                              defaultColor: HaboColors.skip,
+                              onPicked: (value) {
+                                Provider.of<SettingsManager>(context,
+                                        listen: false)
+                                    .skipColor = value;
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    ListTile(
-                      title: Text(S.of(context).backup),
+                    _buildSettingsTile(
+                      title: S.of(context).backup,
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          MaterialButton(
-                            onPressed: () async {
+                          _buildBackupButton(
+                            S.of(context).create,
+                            () async {
                               Provider.of<HabitsManager>(context, listen: false)
                                   .createBackup()
                                   .then(
@@ -306,47 +467,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     },
                                   );
                             },
-                            child: Text(
-                              S.of(context).create,
-                              style: const TextStyle(
-                                  decoration: TextDecoration.underline),
-                            ),
                           ),
-                          const VerticalDivider(
-                            thickness: 1,
-                            indent: 20,
-                            endIndent: 20,
-                            color: Colors.grey,
+                          Container(
+                            height: 25,
+                            width: 1,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            color:
+                                Theme.of(context).dividerColor.withOpacity(0.3),
                           ),
-                          MaterialButton(
-                            onPressed: () async {
+                          _buildBackupButton(
+                            S.of(context).restore,
+                            () async {
                               showRestoreDialog(context);
                             },
-                            child: Text(
-                              S.of(context).restore,
-                              style: const TextStyle(
-                                  decoration: TextDecoration.underline),
-                            ),
                           ),
                         ],
                       ),
                     ),
-                    ListTile(
-                      title: Text(S.of(context).onboarding),
+                    _buildSettingsTile(
+                      title: S.of(context).onboarding,
                       onTap: () {
                         Provider.of<AppStateManager>(context, listen: false)
                             .goOnboarding(true);
                       },
                     ),
-                    ListTile(
-                      title: Text(S.of(context).about),
+                    _buildSettingsTile(
+                      title: S.of(context).about,
                       onTap: () {
                         showAboutDialog(
                           context: context,
-                          applicationIcon: Image.asset(
-                            'assets/images/icon.png',
-                            width: 55,
-                            height: 55,
+                          applicationIcon: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                'assets/images/icon.png',
+                                width: 60,
+                                height: 60,
+                              ),
+                            ),
                           ),
                           applicationName: 'Metoera App Tracker',
                           applicationVersion: _packageInfo.version,
@@ -358,103 +526,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 text: TextSpan(
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   children: [
-                                    TextSpan(
-                                      style: const TextStyle(
-                                          color: Colors.blue,
-                                          decoration: TextDecoration.underline),
-                                      text: S.of(context).termsAndConditions,
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          final Uri url = Uri.parse(
-                                              'https://habo.space/terms.html#terms');
-                                          if (await canLaunchUrl(url)) {
-                                            await launchUrl(
-                                              url,
-                                              mode: LaunchMode
-                                                  .externalApplication,
-                                            );
-                                          }
-                                        },
+                                    _buildLinkTextSpan(
+                                      S.of(context).termsAndConditions,
+                                      'https://habo.space/terms.html#terms',
                                     ),
                                     const TextSpan(text: '\n'),
-                                    TextSpan(
-                                      style: const TextStyle(
-                                          color: Colors.blue,
-                                          decoration: TextDecoration.underline),
-                                      text: S.of(context).privacyPolicy,
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          final Uri url = Uri.parse(
-                                              'https://habo.space/terms.html#privacy');
-                                          if (await canLaunchUrl(url)) {
-                                            await launchUrl(
-                                              url,
-                                              mode: LaunchMode
-                                                  .externalApplication,
-                                            );
-                                          }
-                                        },
+                                    _buildLinkTextSpan(
+                                      S.of(context).privacyPolicy,
+                                      'https://habo.space/terms.html#privacy',
                                     ),
                                     const TextSpan(text: '\n'),
-                                    TextSpan(
-                                      style: const TextStyle(
-                                          color: Colors.blue,
-                                          decoration: TextDecoration.underline),
-                                      text: S.of(context).disclaimer,
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          final Uri url = Uri.parse(
-                                              'https://habo.space/terms.html#disclaimer');
-                                          if (await canLaunchUrl(url)) {
-                                            await launchUrl(
-                                              url,
-                                              mode: LaunchMode
-                                                  .externalApplication,
-                                            );
-                                          }
-                                        },
+                                    _buildLinkTextSpan(
+                                      S.of(context).disclaimer,
+                                      'https://habo.space/terms.html#disclaimer',
                                     ),
                                     const TextSpan(text: '\n'),
-                                    TextSpan(
-                                      style: const TextStyle(
-                                          color: Colors.blue,
-                                          decoration: TextDecoration.underline),
-                                      text: S.of(context).sourceCode,
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          final Uri url = Uri.parse(
-                                              'https://github.com/xpavle00/Habo');
-                                          if (await canLaunchUrl(url)) {
-                                            await launchUrl(
-                                              url,
-                                              mode: LaunchMode
-                                                  .externalApplication,
-                                            );
-                                          }
-                                        },
+                                    _buildLinkTextSpan(
+                                      S.of(context).sourceCode,
+                                      'https://github.com/xpavle00/Habo',
                                     ),
                                     const TextSpan(text: '\n\n'),
                                     TextSpan(
                                       text: S.of(context).ifYouWantToSupport,
                                     ),
                                     const TextSpan(text: '\n'),
-                                    TextSpan(
-                                      style: const TextStyle(
-                                          color: Colors.blue,
-                                          decoration: TextDecoration.underline),
-                                      text: S.of(context).buyMeACoffee,
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          final Uri url = Uri.parse(
-                                              'https://www.buymeacoffee.com/peterpavlenko');
-                                          if (await canLaunchUrl(url)) {
-                                            await launchUrl(
-                                              url,
-                                              mode: LaunchMode
-                                                  .externalApplication,
-                                            );
-                                          }
-                                        },
+                                    _buildLinkTextSpan(
+                                      S.of(context).buyMeACoffee,
+                                      'https://www.buymeacoffee.com/peterpavlenko',
                                     ),
                                   ],
                                 ),
@@ -471,6 +569,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildColorIconWrapper(Widget child) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 3,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildBackupButton(String text, VoidCallback onPressed) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  TextSpan _buildLinkTextSpan(String text, String url) {
+    return TextSpan(
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.primary,
+        decoration: TextDecoration.underline,
+      ),
+      text: text,
+      recognizer: TapGestureRecognizer()
+        ..onTap = () async {
+          final Uri uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(
+              uri,
+              mode: LaunchMode.externalApplication,
+            );
+          }
+        },
     );
   }
 }
